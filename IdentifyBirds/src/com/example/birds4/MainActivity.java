@@ -71,6 +71,9 @@ public class MainActivity extends Activity {
 	private int red_color=Color.rgb(211, 1, 0);
 	private int white_color=Color.rgb(255, 255, 255);
 	private int yellow_color=Color.rgb(254, 237, 33);
+	private int reddishBrown_color=Color.rgb(170, 42, 43);
+	private int pink_color=Color.rgb(252, 178, 211);
+	private int lightBlue_color=Color.rgb(154, 206, 255);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -401,6 +404,24 @@ public class MainActivity extends Activity {
 
 			floodFill(point,targetColor,yellow_color);	//Yellow
 			changeTargetColor(requestCode,yellow_color);
+		}
+		
+		else if(resultCode==17){
+
+			floodFill(point,targetColor,reddishBrown_color);	//ReddishBrown
+			changeTargetColor(requestCode,reddishBrown_color);
+		}
+		
+		else if(resultCode==18){
+
+			floodFill(point,targetColor,pink_color);	//Pink
+			changeTargetColor(requestCode,pink_color);
+		}
+		
+		else if(resultCode==19){
+
+			floodFill(point,targetColor,lightBlue_color);	//Light Blue
+			changeTargetColor(requestCode,lightBlue_color);
 		}
 	
 	}

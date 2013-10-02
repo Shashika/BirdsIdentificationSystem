@@ -83,6 +83,9 @@ public class GridViewList extends Activity {
 		Bitmap red = BitmapFactory.decodeResource(this.getResources(), R.drawable.red);
 		Bitmap white = BitmapFactory.decodeResource(this.getResources(), R.drawable.white);
 		Bitmap yellow = BitmapFactory.decodeResource(this.getResources(), R.drawable.yellow);
+		Bitmap reddishBrown = BitmapFactory.decodeResource(this.getResources(), R.drawable.reddishbrown);
+		Bitmap pink = BitmapFactory.decodeResource(this.getResources(), R.drawable.pink);
+		Bitmap lightBlue = BitmapFactory.decodeResource(this.getResources(), R.drawable.lightblue);
 		
 		gridArray.add(new Item(beige,"Beige"));
 		gridArray.add(new Item(black,"Black"));
@@ -100,6 +103,10 @@ public class GridViewList extends Activity {
 		gridArray.add(new Item(red,"Red"));
 		gridArray.add(new Item(white,"White"));
 		gridArray.add(new Item(yellow,"Yellow"));
+		gridArray.add(new Item(reddishBrown,"Reddish Brown"));
+		gridArray.add(new Item(pink,"Pink"));
+		gridArray.add(new Item(lightBlue,"Light Blue "));
+		
 		
 		gridView = (GridView) findViewById(R.id.gridView1);
 		customGridAdapter = new CustomGridViewAdapter(this, R.layout.row, gridArray);
@@ -111,8 +118,8 @@ public class GridViewList extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position,long id) {
 				// TODO Auto-generated method stub
-		
-					setResult((int)id+1);
+				/*1st position taken return 0 as position and also when user doesn't select any color it returns 0, So avoid that conflict, 1st position of the color list taken as 1*/
+					setResult((int)id+1);	
 					finish();
 	
 			}
