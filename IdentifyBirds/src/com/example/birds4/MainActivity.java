@@ -23,6 +23,7 @@ import android.graphics.Bitmap.Config;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class MainActivity extends Activity {
 	private RelativeLayout dashBoard;
 	private BirdColors birdCol;
 	private ImageView image;
+	private Button search;
 	
 	private Paint paint;
 	private Bitmap mBitmap;
@@ -54,6 +56,14 @@ public class MainActivity extends Activity {
 	private int tailTarget=Color.rgb(245, 243, 241);
 	private int legTarget=Color.rgb(245, 243, 241);
 	
+	private boolean isAddColorBill=false;
+	private boolean isAddColorHead=false;
+	private boolean isAddColorFace=false;
+	private boolean isAddColorBreast=false;
+	private boolean isAddColorFeather=false;
+	private boolean isAddColorTail=false;
+	private boolean isAddColorLeg=false;
+
 															/*color list*/
 	private int beige_color=Color.rgb(246, 240, 197);
 	private int black_color=Color.rgb(1,1,1);
@@ -75,6 +85,13 @@ public class MainActivity extends Activity {
 	private int pink_color=Color.rgb(252, 178, 211);
 	private int lightBlue_color=Color.rgb(154, 206, 255);
 	
+	
+	
+	private int numericColorValue;
+	private int weightedValue=0;
+	
+	private ColorDataLoader dataLoader;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,10 +101,35 @@ public class MainActivity extends Activity {
 		
 		dashBoard = (RelativeLayout) findViewById(R.id.dashBoard);
 	    image = (ImageView) findViewById(R.id.BirdPhoto);
+	    search=(Button) findViewById(R.id.searchButton);
+	    
 	    dashBoard.addView(birdCol);
 
 	    setTitle("Add Colors");
+	    
+	    search.setOnClickListener(new View.OnClickListener(
+	    		) {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				ColorDataLoader dataLoader=new ColorDataLoader(
+						getColorValue(getBillTargetColor()),
+						getColorValue(getFaceTargetColor()),
+						getColorValue(getHeadTargetColor()),
+						getColorValue(getBreastTargetColor()),
+						getColorValue(getFeathersTargetColor()),
+						getColorValue(getTailTargetColor()),
+						getColorValue(getLegTargetColor()),
+						getWeightedValue()
+						);
+				
+			}
+
+			
+		});
 	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -95,10 +137,7 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
-	
-	
-	
+		
 	
 
 	class BirdColors extends View{			/*inner View class*/
@@ -228,6 +267,12 @@ public class MainActivity extends Activity {
 			point.y=y;
 			
 			chooseColor(requestCode,resultCode,billTarget);
+			
+			if(isAddColorBill==false){
+				
+				weightedValue+=1;
+				isAddColorBill=true;
+			}
 		}
 		
 		
@@ -240,6 +285,12 @@ public class MainActivity extends Activity {
 			point.y=y;
 			
 			chooseColor(requestCode,resultCode,headTarget);
+			
+			if(isAddColorHead==false){
+				
+				weightedValue+=1;
+				isAddColorHead=true;
+			}
 		}
 		
 		if(requestCode==3){	//face
@@ -251,6 +302,12 @@ public class MainActivity extends Activity {
 			point.y=y;
 			
 			chooseColor(requestCode,resultCode,faceTarget);
+			
+			if(isAddColorFace==false){
+				
+				weightedValue+=2;
+				isAddColorFace=true;
+			}
 		}
 		
 		if(requestCode==4){	//breast
@@ -262,6 +319,12 @@ public class MainActivity extends Activity {
 			point.y=y;
 			
 			chooseColor(requestCode,resultCode,breastTarget);
+			
+			if(isAddColorBreast==false){
+				
+				weightedValue+=2;
+				isAddColorBreast=true;
+			}
 		}
 		
 		if(requestCode==5){	//feathers
@@ -273,6 +336,12 @@ public class MainActivity extends Activity {
 			point.y=y;
 			
 			chooseColor(requestCode,resultCode,featherTarget);
+			
+			if(isAddColorFeather==false){
+				
+				weightedValue+=2;
+				isAddColorFeather=true;
+			}
 		}
 		
 		if(requestCode==6){	//tail
@@ -284,6 +353,12 @@ public class MainActivity extends Activity {
 			point.y=y;
 			
 			chooseColor(requestCode,resultCode,tailTarget);
+			
+			if(isAddColorTail==false){
+				
+				weightedValue+=2;
+				isAddColorTail=true;
+			}
 		}
 		
 		if(requestCode==7){	//legs
@@ -295,6 +370,12 @@ public class MainActivity extends Activity {
 			point.y=y;
 			
 			chooseColor(requestCode,resultCode,legTarget);
+			
+			if(isAddColorLeg==false){
+				
+				weightedValue+=1;
+				isAddColorLeg=true;
+			}
 		}
 	}
 	
@@ -527,6 +608,11 @@ public class MainActivity extends Activity {
 		return part;
 	}
 	
+	public int getWeightedValue(){
+		
+		return weightedValue;
+	}
+	
 	public int getBillTargetColor(){
 		
 		return billTarget;
@@ -560,6 +646,109 @@ public class MainActivity extends Activity {
 	public int getLegTargetColor(){
 		
 		return legTarget;
+	}
+	
+	
+	
+	public int getColorValue(int billColor){
+		
+		
+		if(beige_color==billColor){
+			
+			numericColorValue=1;
+		}
+		
+		else if(black_color==billColor){
+			
+			numericColorValue=2;
+		}
+		
+		else if(blue_color==billColor){
+			
+			numericColorValue=3;
+		}
+		
+		else if(brown_color==billColor){
+			
+			numericColorValue=4;
+		}
+		
+		else if(darkBlue_color==billColor){
+			
+			numericColorValue=5;
+		}
+		
+		else if(darkGreen_color==billColor){
+			
+			numericColorValue=6;
+		}
+		
+		else if(grey_color==billColor){
+			
+			numericColorValue=7;
+		}
+		
+		else if(green_color==billColor){
+			
+			numericColorValue=8;
+		}
+		
+		else if(greenishBlue_color==billColor){
+			
+			numericColorValue=9;
+		}
+		
+		else if(lightBrown_color==billColor){
+			
+			numericColorValue=10;
+		}
+		
+		else if(lightGreen_color==billColor){
+			
+			numericColorValue=11;
+		}
+		
+		else if(orange_color==billColor){
+			
+			numericColorValue=12;
+		}
+		
+		else if(purple_color==billColor){
+			
+			numericColorValue=13;
+		}
+		
+		else if(red_color==billColor){
+			
+			numericColorValue=14;
+		}
+		
+		else if(white_color==billColor){
+			
+			numericColorValue=15;
+		}
+		
+		else if(yellow_color==billColor){
+			
+			numericColorValue=16;
+		}
+		
+		else if(reddishBrown_color==billColor){
+			
+			numericColorValue=17;
+		}
+		
+		else if(pink_color==billColor){
+			
+			numericColorValue=18;
+		}
+		
+		else if(lightBlue_color==billColor){
+			
+			numericColorValue=19;
+		}
+		
+		return numericColorValue;
 	}
 }
 
