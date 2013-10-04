@@ -7,6 +7,7 @@ package com.example.birds4;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ExecutionException;
 
 import com.example.colorList.GridViewList;
 import android.os.Bundle;
@@ -113,21 +114,34 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				ColorDataLoader dataLoader=new ColorDataLoader(
-						getColorValue(getBillTargetColor()),
+	
+				 
+				 
+				dataLoader=new ColorDataLoader();
+				
+				dataLoader.execute(getColorValue(getBillTargetColor()),
 						getColorValue(getFaceTargetColor()),
 						getColorValue(getHeadTargetColor()),
 						getColorValue(getBreastTargetColor()),
 						getColorValue(getFeathersTargetColor()),
 						getColorValue(getTailTargetColor()),
 						getColorValue(getLegTargetColor()),
-						getWeightedValue()
-						);
+						getWeightedValue());
 				
+				try {
+					setTitle(Integer.toString(dataLoader.get()));
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 			
 		});
+	
 	}
 	
 
