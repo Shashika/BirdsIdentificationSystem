@@ -1,4 +1,4 @@
-package com.example.birds4;
+package com.example.birdDetails;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,74 +15,56 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.birdNameList.BirdListView;
-
-import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class ColorDataLoader extends AsyncTask<Integer, Void, String[]>{
+public class TextDataLoader extends AsyncTask<Integer, Void, String[]>{
 
-	
-	private int billColorValue;
-	private int headColorValue;
-	private int faceColorValue;
-	private int breastColorValue;
-	private int featherColorValue;
-	private int tailColorValue;
-	private int legColorValue;
-	private int weightedValue;
-
-	private String birdData[];
+	String result="";
+	InputStream isr=null;
+	Bitmap btmp;
 	
 	@Override
-	protected void onPreExecute() {
-		// TODO Auto-generated method stub
-		super.onPreExecute();
+	protected void onPostExecute(String[] result) {
+		super.onPostExecute(result);
+		
 	}
 
-	
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+		
+	}
 
 	@Override
 	protected String[] doInBackground(Integer... params) {
-		// TODO Auto-generated method stub
-		
-		billColorValue=params[0];
-		headColorValue=params[1];
-		faceColorValue=params[2];
-		breastColorValue=params[3];
-		featherColorValue=params[4];
-		tailColorValue=params[5];
-		legColorValue=params[6];
-		
-		weightedValue=params[7];
-		
 		
 		String result="";
 		InputStream is=null;
-		
+		String ID=String.valueOf(params[0]);
 		
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost("http://shashikaranga.site50.net/birdsAlgorithm.php");
+		HttpPost httppost = new HttpPost("http://shashikaranga.site50.net/textData.php");
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		
-		nameValuePairs.add(new BasicNameValuePair("bill",Integer.toString(billColorValue)));
-		nameValuePairs.add(new BasicNameValuePair("head",Integer.toString(headColorValue)));
-		nameValuePairs.add(new BasicNameValuePair("face",Integer.toString(faceColorValue)));
-		nameValuePairs.add(new BasicNameValuePair("breast",Integer.toString(breastColorValue)));
-		nameValuePairs.add(new BasicNameValuePair("feather",Integer.toString(featherColorValue)));
-		nameValuePairs.add(new BasicNameValuePair("tail",Integer.toString(tailColorValue)));
-		nameValuePairs.add(new BasicNameValuePair("leg",Integer.toString(legColorValue)));
-		nameValuePairs.add(new BasicNameValuePair("weight",Integer.toString(weightedValue)));
+
+		nameValuePairs.add(new BasicNameValuePair("ID",ID));
 		
 		
-		// Execute HTTP Post Request
+		
+			// Execute HTTP Post Request
 		try {
 
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -124,13 +106,13 @@ public class ColorDataLoader extends AsyncTask<Integer, Void, String[]>{
 
 				e.printStackTrace();
 			}
-			
-			String line=null;
+
 			try{
 				
 				BufferedReader reader=new BufferedReader(new InputStreamReader(is,"iso-8859-1"),8);
 				StringBuilder sb=new StringBuilder();
 				
+				String line=null;
 				
 				while((line=reader.readLine())!=null){
 					
@@ -145,35 +127,28 @@ public class ColorDataLoader extends AsyncTask<Integer, Void, String[]>{
 				Log.e("log_tag","Error converting result" +e.toString());
 			}
 			
-		
-			int len=0;
-			
-			int dataLength=0;
+			String[] s=new String[3];
 			
 			try{
 				
 				JSONArray jarray=new JSONArray(result);
-				len=Integer.parseInt(jarray.getString(0));
-				dataLength=(3*len)+1;
-				birdData=new String[3*len+1];
 				
-				birdData[0]=String.valueOf(len);
-				
-				for(int i=1;i<dataLength;i++){
-					
-					birdData[i]=jarray.getString(i);
+				for(int i=0;i<jarray.length();i++){
+					JSONObject json=jarray.getJSONObject(i);
+	
+					s[0]=json.getString("Name");
+					s[1]=json.getString("ScientificName");
+					s[2]=json.getString("Description");
 				}
 				
-			
-				
 			}
-				
 			catch(Exception e){
 				
 				Log.e("log_tag","Error parsing data" +e.toString());
 			}
-		
-			return birdData;
+			
+			
+			return s;
 	}
 
 }

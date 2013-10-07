@@ -2,14 +2,19 @@ package com.example.birdNameList;
 
 import java.util.ArrayList;
 
+import com.example.birdDetails.BirdDetails;
 import com.example.birds4.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class BirdListView extends Activity{
 
@@ -18,6 +23,7 @@ public class BirdListView extends Activity{
 	private ItemAdaptor itemAdapter;
 
 	private Bundle bundle;
+	private Bundle birdIDbundle;
 	private String[] listBirdData;
 	private int listLength;
 	private int[] listID;
@@ -51,6 +57,30 @@ public class BirdListView extends Activity{
 		listView = (ListView) findViewById(R.id.listView);
 		itemAdapter = new ItemAdaptor(this, R.layout.listrow, listArray);
 		listView.setAdapter((ListAdapter) itemAdapter);
+		
+		listView.setOnItemClickListener(new OnItemClickListener() {
+		       
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int position,long id) {
+				// TODO Auto-generated method stub
+				
+					//setResult((int)id+1);	
+					birdIDbundle = new Bundle();
+								
+					birdIDbundle.putInt("BirdID", listID[(int)id]);		
+					showBirdDetails();
+	
+			}
+        });
+		
+	}
+	
+	private void showBirdDetails(){
+		
+		Intent intent = new Intent(this,BirdDetails.class);
+		intent.putExtras(birdIDbundle);
+		startActivity(intent);
 	}
 	
 	

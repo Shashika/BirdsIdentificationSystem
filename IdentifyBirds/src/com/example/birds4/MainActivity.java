@@ -15,6 +15,7 @@ import com.example.colorList.GridViewList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -93,7 +94,6 @@ public class MainActivity extends Activity {
 	private int lightBlue_color=Color.rgb(154, 206, 255);
 	
 	
-	
 	private int numericColorValue;
 	private int weightedValue=0;
 	
@@ -101,6 +101,10 @@ public class MainActivity extends Activity {
 	private String[] birdDataBaseData;
 	
 	private BirdListView birdDataList;
+	
+	private ProgressDialog progressBar;
+	
+	private boolean isGetData=false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,11 +126,44 @@ public class MainActivity extends Activity {
 	    		) {
 			
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View v) {
 				// TODO Auto-generated method stub
 	
-				 
-				 
+			/*	progressBar=new ProgressDialog(v.getContext());
+				progressBar.setCancelable(true);
+				progressBar.setMessage("Searching...");
+				progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER); 
+				progressBar.setProgress(0);
+				progressBar.setMax(100);
+				progressBar.show();
+				
+				
+				Thread t=new Thread(new Runnable() {
+
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						while(true){
+							
+							if(isGetData==true){
+								progressBar.dismiss();
+								
+							}
+							else{
+								try {
+									Thread.sleep(1000);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+							
+						}
+					}
+				});
+				t.start();*/
+				
 				dataLoader=new ColorDataLoader();
 				
 				dataLoader.execute(getColorValue(getBillTargetColor()),
@@ -148,6 +185,9 @@ public class MainActivity extends Activity {
 					Intent intent = new Intent(mContext,BirdListView.class );
 					intent.putExtras(bundle);
 					startActivity(intent);
+					
+					
+					isGetData=true;
 					
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
