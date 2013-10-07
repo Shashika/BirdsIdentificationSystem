@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -36,6 +37,8 @@ public class MainActivity extends Activity {
 	private BirdColors birdCol;
 	private ImageView image;
 	private Button search;
+	
+	TextView testView;
 	
 	private Paint paint;
 	private Bitmap mBitmap;
@@ -103,6 +106,7 @@ public class MainActivity extends Activity {
 		dashBoard = (RelativeLayout) findViewById(R.id.dashBoard);
 	    image = (ImageView) findViewById(R.id.BirdPhoto);
 	    search=(Button) findViewById(R.id.searchButton);
+	    testView=(TextView) findViewById(R.id.textView1);
 	    
 	    dashBoard.addView(birdCol);
 
@@ -129,7 +133,7 @@ public class MainActivity extends Activity {
 						getWeightedValue());
 				
 				try {
-					setTitle(Integer.toString(dataLoader.get()));
+					testView.setText(dataLoader.get());
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
