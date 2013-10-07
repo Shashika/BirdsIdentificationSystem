@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutionException;
 import com.example.birds4.R;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +25,8 @@ public class BirdDetails extends Activity{
 		scientificName=(TextView) findViewById(R.id.textScientificName);
 		description=(TextView) findViewById(R.id.textDescription);
 		image=(ImageView) findViewById(R.id.imageView1);
+		
+		setTitle("Details");
 		
 		bundle = getIntent().getExtras();	
 		

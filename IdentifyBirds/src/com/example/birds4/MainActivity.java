@@ -100,11 +100,10 @@ public class MainActivity extends Activity {
 	private ColorDataLoader dataLoader;
 	private String[] birdDataBaseData;
 	
-	private BirdListView birdDataList;
 	
 	private ProgressDialog progressBar;
 	
-	private boolean isGetData=false;
+	private boolean isGetData;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,30 +115,18 @@ public class MainActivity extends Activity {
 		dashBoard = (RelativeLayout) findViewById(R.id.dashBoard);
 	    image = (ImageView) findViewById(R.id.BirdPhoto);
 	    search=(Button) findViewById(R.id.searchButton);
-	    testView=(TextView) findViewById(R.id.textView1);
 	    
 	    dashBoard.addView(birdCol);
 
 	    setTitle("Add Colors");
 	    
-	    search.setOnClickListener(new View.OnClickListener(
-	    		) {
+	    search.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-	
-			/*	progressBar=new ProgressDialog(v.getContext());
-				progressBar.setCancelable(true);
-				progressBar.setMessage("Searching...");
-				progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER); 
-				progressBar.setProgress(0);
-				progressBar.setMax(100);
-				progressBar.show();
-				
-				
+				isGetData=false;
 				Thread t=new Thread(new Runnable() {
-
 					
 					@Override
 					public void run() {
@@ -152,7 +139,7 @@ public class MainActivity extends Activity {
 							}
 							else{
 								try {
-									Thread.sleep(1000);
+									Thread.sleep(100);
 								} catch (InterruptedException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
@@ -162,8 +149,15 @@ public class MainActivity extends Activity {
 						}
 					}
 				});
-				t.start();*/
+				t.start();
+								
 				
+				progressBar=new ProgressDialog(v.getContext());
+				progressBar.setCancelable(true);
+				progressBar.setMessage("Searching...");
+				progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER); 
+				progressBar.show();
+
 				dataLoader=new ColorDataLoader();
 				
 				dataLoader.execute(getColorValue(getBillTargetColor()),
