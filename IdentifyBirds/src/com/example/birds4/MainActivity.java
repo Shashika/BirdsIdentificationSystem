@@ -9,7 +9,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 
+import com.example.birdNameList.BirdListView;
 import com.example.colorList.GridViewList;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -95,6 +98,9 @@ public class MainActivity extends Activity {
 	private int weightedValue=0;
 	
 	private ColorDataLoader dataLoader;
+	private String[] birdDataBaseData;
+	
+	private BirdListView birdDataList;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,8 +130,8 @@ public class MainActivity extends Activity {
 				dataLoader=new ColorDataLoader();
 				
 				dataLoader.execute(getColorValue(getBillTargetColor()),
-						getColorValue(getFaceTargetColor()),
 						getColorValue(getHeadTargetColor()),
+						getColorValue(getFaceTargetColor()),
 						getColorValue(getBreastTargetColor()),
 						getColorValue(getFeathersTargetColor()),
 						getColorValue(getTailTargetColor()),
@@ -133,7 +139,16 @@ public class MainActivity extends Activity {
 						getWeightedValue());
 				
 				try {
-					testView.setText(dataLoader.get());
+					
+					//birdDataList=new BirdListView(dataLoader.get());
+					birdDataBaseData=dataLoader.get();
+					
+					Bundle bundle = new Bundle();
+					bundle.putStringArray("BirdData", birdDataBaseData);
+					Intent intent = new Intent(mContext,BirdListView.class );
+					intent.putExtras(bundle);
+					startActivity(intent);
+					
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

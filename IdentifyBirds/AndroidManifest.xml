@@ -35,6 +35,13 @@
       
         </activity>
         
+          <activity
+            android:name="com.example.birdNameList.BirdListView"
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait">
+      
+        </activity>
+        
     </application>
 
 </manifest>

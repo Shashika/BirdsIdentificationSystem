@@ -20,12 +20,17 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.example.birdNameList.BirdListView;
+
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class ColorDataLoader extends AsyncTask<Integer, Void, String>{
+public class ColorDataLoader extends AsyncTask<Integer, Void, String[]>{
 
+	private BirdListView birdList;
+	
 	private int billColorValue;
 	private int headColorValue;
 	private int faceColorValue;
@@ -35,24 +40,20 @@ public class ColorDataLoader extends AsyncTask<Integer, Void, String>{
 	private int legColorValue;
 	private int weightedValue;
 
-
+	private String birdData[];
+	
 	@Override
 	protected void onPreExecute() {
 		// TODO Auto-generated method stub
 		super.onPreExecute();
 	}
-	
-	@Override
-	protected void onPostExecute(String result) {
-		// TODO Auto-generated method stub
-		super.onPostExecute(result);
-	}
 
 	
 
 	@Override
-	protected String doInBackground(Integer... params) {
+	protected String[] doInBackground(Integer... params) {
 		// TODO Auto-generated method stub
+		
 		billColorValue=params[0];
 		headColorValue=params[1];
 		faceColorValue=params[2];
@@ -132,7 +133,6 @@ public class ColorDataLoader extends AsyncTask<Integer, Void, String>{
 				StringBuilder sb=new StringBuilder();
 				
 				
-				
 				while((line=reader.readLine())!=null){
 					
 					sb.append(line+"\n");
@@ -146,12 +146,43 @@ public class ColorDataLoader extends AsyncTask<Integer, Void, String>{
 				Log.e("log_tag","Error converting result" +e.toString());
 			}
 			
-			//String[] s=new String[3];
-			String len="";
+		
+			int len=0;
+			
+			int dataLength=0;
+			
 			try{
 				
 				JSONArray jarray=new JSONArray(result);
-				len=jarray.getString(0);
+				len=Integer.parseInt(jarray.getString(0));
+				dataLength=(3*len)+1;
+				birdData=new String[3*len+1];
+				
+				birdData[0]=String.valueOf(len);
+				
+				for(int i=1;i<dataLength;i++){
+					
+					birdData[i]=jarray.getString(i);
+				}
+				
+			/*	id=new int[len];
+				rank=new int[len];
+				birdName=new String[len];
+				
+				for(int i=0;i<len;i++){
+					
+					id[i]=Integer.parseInt(jarray.getString(i+1));
+				}
+				
+				for(int i=0;i<len;i++){
+					
+					rank[i]=Integer.parseInt(jarray.getString(i+len+1));
+				}
+				
+				for(int i=0;i<len;i++){
+					
+					birdName[i]=jarray.getString(i+len*2+1);
+				}*/
 				
 				/*for(int i=0;i<jarray.length();i++){
 					JSONObject json=jarray.getJSONObject(i);
@@ -159,6 +190,7 @@ public class ColorDataLoader extends AsyncTask<Integer, Void, String>{
 					len=json.getString(jarray.getString(index))
 					
 				}*/
+				//birdList=new BirdListView(len,id,rank,birdName);
 				
 			}
 				
@@ -166,6 +198,7 @@ public class ColorDataLoader extends AsyncTask<Integer, Void, String>{
 				
 				Log.e("log_tag","Error parsing data" +e.toString());
 			}
+			//return null;
 			
 			
 			
@@ -174,7 +207,7 @@ public class ColorDataLoader extends AsyncTask<Integer, Void, String>{
 		
 			//String line="Sha";
 			//return line;
-			return len;
+			return birdData;
 	}
 
 }
