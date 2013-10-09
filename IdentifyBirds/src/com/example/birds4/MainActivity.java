@@ -11,12 +11,13 @@ import java.util.concurrent.ExecutionException;
 
 import com.example.birdNameList.BirdListView;
 import com.example.colorList.GridViewList;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,7 +33,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
 	private Point point=new Point();
 	private int part;
 	
-															/*initial background color of the bird sketch*/
+	/*initial background color of the bird sketch*/
 	private int billTarget=Color.rgb(245, 243, 241);
 	private int headTarget=Color.rgb(245, 243, 241);
 	private int faceTarget=Color.rgb(245, 243, 241);
@@ -72,7 +72,11 @@ public class MainActivity extends Activity {
 	private boolean isAddColorTail=false;
 	private boolean isAddColorLeg=false;
 
-															/*color list*/
+						
+	/*color list*/
+	
+	private int background_color=Color.rgb(245, 243, 241);
+	
 	private int beige_color=Color.rgb(246, 240, 197);
 	private int black_color=Color.rgb(1,1,1);
 	private int blue_color=Color.rgb(0, 0, 255);
@@ -94,16 +98,15 @@ public class MainActivity extends Activity {
 	private int lightBlue_color=Color.rgb(154, 206, 255);
 	
 	
-	private int numericColorValue;
+	private int numericColorValue=0;
 	private int weightedValue=0;
 	
 	private ColorDataLoader dataLoader;
 	private String[] birdDataBaseData;
 	
-	
-	private ProgressDialog progressBar;
-	
-	private boolean isGetData;
+
+	private Boolean isInternetPresent = false;
+	private ConnectionDetector cd;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -120,12 +123,14 @@ public class MainActivity extends Activity {
 
 	    setTitle("Add Colors");
 	    
+	    cd = new ConnectionDetector(getApplicationContext());
+	    
 	    search.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				isGetData=false;
+			/*	isGetData=false;
 				Thread t=new Thread(new Runnable() {
 					
 					@Override
@@ -156,46 +161,88 @@ public class MainActivity extends Activity {
 				progressBar.setCancelable(true);
 				progressBar.setMessage("Searching...");
 				progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER); 
-				progressBar.show();
+				progressBar.show();*/
+		          isInternetPresent = cd.isConnectingToInternet();
+		          
+	                // check for Internet status
+	                if (isInternetPresent) {
+	                    // Internet Connection is Present
+	                    // make HTTP requests
+	                    //showAlertDialog(MainActivity.this, "Internet Connection",
+	                           // "You have internet connection", true);
+	                	sendDataToDataBase();
+	                } else {
+	                    // Internet connection is not present
+	                    // Ask user to connect to Internet
+	                    showAlertDialog(MainActivity.this, "No Internet Connection",
+	                            "You don't have internet connection.", false);
+	                    finish();
+	                }
 
-				dataLoader=new ColorDataLoader();
 				
-				dataLoader.execute(getColorValue(getBillTargetColor()),
-						getColorValue(getHeadTargetColor()),
-						getColorValue(getFaceTargetColor()),
-						getColorValue(getBreastTargetColor()),
-						getColorValue(getFeathersTargetColor()),
-						getColorValue(getTailTargetColor()),
-						getColorValue(getLegTargetColor()),
-						getWeightedValue());
-				
-				try {
-					
-					//birdDataList=new BirdListView(dataLoader.get());
-					birdDataBaseData=dataLoader.get();
-					
-					Bundle bundle = new Bundle();
-					bundle.putStringArray("BirdData", birdDataBaseData);
-					Intent intent = new Intent(mContext,BirdListView.class );
-					intent.putExtras(bundle);
-					startActivity(intent);
-					
-					
-					isGetData=true;
-					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
 			}
-
-			
 		});
 	
 	}
+	
+	public void sendDataToDataBase(){
+		
+		dataLoader=new ColorDataLoader();
+		
+		dataLoader.execute(getColorValue(getBillTargetColor()),
+				getColorValue(getHeadTargetColor()),
+				getColorValue(getFaceTargetColor()),
+				getColorValue(getBreastTargetColor()),
+				getColorValue(getFeathersTargetColor()),
+				getColorValue(getTailTargetColor()),
+				getColorValue(getLegTargetColor()),
+				getWeightedValue());
+		
+		try {
+			
+		
+			birdDataBaseData=dataLoader.get();
+			
+			Bundle bundle = new Bundle();
+			bundle.putStringArray("BirdData", birdDataBaseData);
+			Intent intent = new Intent(mContext,BirdListView.class );
+			intent.putExtras(bundle);
+			startActivity(intent);
+			
+
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+	
+	public void showAlertDialog(Context context, String title, String message, Boolean status) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+ 
+        // Setting Dialog Title
+        alertDialog.setTitle(title);
+ 
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+         
+        // Setting alert dialog icon
+        //alertDialog.setIcon((status) ? R.drawable.success : R.drawable.fail);
+ 
+        // Setting OK Button
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+ 
+        // Showing Alert Message
+        alertDialog.show();
+    }
 	
 
 	@Override
@@ -717,100 +764,105 @@ public class MainActivity extends Activity {
 	
 	
 	
-	public int getColorValue(int billColor){
+	public int getColorValue(int partColor){
+		
+		if(background_color==partColor){
+			
+			numericColorValue=0;
+		}
 		
 		
-		if(beige_color==billColor){
+		else if(beige_color==partColor){
 			
 			numericColorValue=1;
 		}
 		
-		else if(black_color==billColor){
+		else if(black_color==partColor){
 			
 			numericColorValue=2;
 		}
 		
-		else if(blue_color==billColor){
+		else if(blue_color==partColor){
 			
 			numericColorValue=3;
 		}
 		
-		else if(brown_color==billColor){
+		else if(brown_color==partColor){
 			
 			numericColorValue=4;
 		}
 		
-		else if(darkBlue_color==billColor){
+		else if(darkBlue_color==partColor){
 			
 			numericColorValue=5;
 		}
 		
-		else if(darkGreen_color==billColor){
+		else if(darkGreen_color==partColor){
 			
 			numericColorValue=6;
 		}
 		
-		else if(grey_color==billColor){
+		else if(grey_color==partColor){
 			
 			numericColorValue=7;
 		}
 		
-		else if(green_color==billColor){
+		else if(green_color==partColor){
 			
 			numericColorValue=8;
 		}
 		
-		else if(greenishBlue_color==billColor){
+		else if(greenishBlue_color==partColor){
 			
 			numericColorValue=9;
 		}
 		
-		else if(lightBrown_color==billColor){
+		else if(lightBrown_color==partColor){
 			
 			numericColorValue=10;
 		}
 		
-		else if(lightGreen_color==billColor){
+		else if(lightGreen_color==partColor){
 			
 			numericColorValue=11;
 		}
 		
-		else if(orange_color==billColor){
+		else if(orange_color==partColor){
 			
 			numericColorValue=12;
 		}
 		
-		else if(purple_color==billColor){
+		else if(purple_color==partColor){
 			
 			numericColorValue=13;
 		}
 		
-		else if(red_color==billColor){
+		else if(red_color==partColor){
 			
 			numericColorValue=14;
 		}
 		
-		else if(white_color==billColor){
+		else if(white_color==partColor){
 			
 			numericColorValue=15;
 		}
 		
-		else if(yellow_color==billColor){
+		else if(yellow_color==partColor){
 			
 			numericColorValue=16;
 		}
 		
-		else if(reddishBrown_color==billColor){
+		else if(reddishBrown_color==partColor){
 			
 			numericColorValue=17;
 		}
 		
-		else if(pink_color==billColor){
+		else if(pink_color==partColor){
 			
 			numericColorValue=18;
 		}
 		
-		else if(lightBlue_color==billColor){
+		else if(lightBlue_color==partColor){
 			
 			numericColorValue=19;
 		}

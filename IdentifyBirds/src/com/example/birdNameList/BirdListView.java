@@ -31,9 +31,7 @@ public class BirdListView extends Activity{
 	private int[] listRank;
 	private String[] listBirdName;
 	private Bitmap rank[]=new Bitmap[7];
-	private boolean isGetData;
 
-	private ProgressDialog progressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +65,7 @@ public class BirdListView extends Activity{
 			public void onItemClick(AdapterView<?> parent, View v, int position,long id) {
 				// TODO Auto-generated method stub
 				
-					isGetData=false;
+					/*isGetData=false;
 					Thread t=new Thread(new Runnable() {
 						
 						@Override
@@ -98,13 +96,13 @@ public class BirdListView extends Activity{
 					progressBar.setCancelable(true);
 					progressBar.setMessage("Searching...");
 					progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER); 
-					progressBar.show();
+					progressBar.show();*/
 					
 					
 					birdIDbundle = new Bundle();			
 					birdIDbundle.putInt("BirdID", listID[(int)id]);		
 					showBirdDetails();
-					isGetData=true;
+					
 			}
         });
 		
